@@ -1,16 +1,22 @@
-# This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from pyspark import SparkContext
+from pyspark.streaming import StreamingContext
+
+if __name__=="__main__":
+
+    sc = SparkContext("local[*]","word_count")
+    sc.setLogLevel("ERROR")
+
+    ssc = StreamingContext(sc,5)
+
+    lines = ssc.socketTextStream("localhost",9098)
+    words = lines.flatMap(lambda x:x.split(" "))
+    pairs = words.map(lambda x:(x,1))
+    word_counts=pairs.reduceByKey(lambda x,y:x+y)
+    word_counts.pprint()
+    ssc.start()
+
+    ssc.awaitTermination()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

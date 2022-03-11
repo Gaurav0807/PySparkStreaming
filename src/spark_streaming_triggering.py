@@ -13,5 +13,5 @@ if __name__=="__main__":
     result = df2.writeStream.format("console").outputMode("complete").option("checkpointLocation","checkppoint-location1")\
         .trigger(processingTime="30 seconds").start()
     result.awaitTermination()
-
+6
 
